@@ -1,4 +1,4 @@
-Understood! Let's focus solely on **Decision Tree Construction** using your provided **restaurant domain training data**. We'll walk through the steps to build an optimal decision tree without referencing A\*, Minimax, or related algorithms.
+Let's focus solely on **Decision Tree Construction** using your provided **restaurant domain training data**. We'll walk through the steps to build an optimal decision tree.
 
 ---
 ## **1. Understanding the Training Data**
