@@ -1,34 +1,37 @@
-Let's focus solely on **Decision Tree Construction** using your provided **restaurant domain training data**. We'll walk through the steps to build an optimal decision tree.
+Apologies for the oversight in my previous explanation. You are absolutely correct—**the attribute `Pat` was not initially considered** when calculating Information Gain for the root node. Including all relevant attributes is crucial for accurately constructing the decision tree. Let's rectify this by **including `Pat` in the initial calculations** and **reconstructing the decision tree accordingly**.
 
 ---
-## **1. Understanding the Training Data**
 
-### **A. Overview**
+# Decision Tree Construction for Restaurant Domain
+
+## 1. Understanding the Training Data
+
+### A. Overview
 
 You have a set of training examples where each example consists of:
 
-- **Input Attributes (\( x \))**: A vector of values representing different features of the restaurant scenario.
-- **Output (\( y \))**: A Boolean value indicating whether to **Wait** at the restaurant (`Yes`) or **Not Wait** (`No`).
+- **Input Attributes (x)**: A vector of values representing different features of the restaurant scenario.
+- **Output (y)**: A Boolean value indicating whether to **Wait** at the restaurant (`Yes`) or **Not Wait** (`No`).
 
-### **B. Attributes Description**
+### B. Attributes Description
 
 Based on your data, here's a breakdown of each attribute:
 
-| **Attribute** | **Description**                                  | **Possible Values**                  |
-|---------------|--------------------------------------------------|--------------------------------------|
-| **Alt**       | Alternative Restaurant Availability              | Yes, No                               |
-| **Bar**       | Presence of a Bar                                | Yes, No                               |
-| **Fri**       | Is it Friday?                                    | Yes, No                               |
-| **Hun**       | Hunger Level                                     | Yes, No                               |
-| **Pat**       | Patronage Level                                  | Some, Full, None                      |
-| **Price**     | Price Range                                      | S, SS, $$$                            |
-| **Rain**      | Is it Raining?                                   | Yes, No                               |
-| **Res**       | Reservation Status                               | Yes, No                               |
-| **Type**      | Type of Cuisine                                  | French, Thai, Burger, Italian         |
-| **Est**       | Estimated Wait Time                              | 0-10, 10-30, 30-60, >60                |
-| **WillWait**  | Decision to Wait at the Restaurant (Target)      | Yes, No                               |
+| **Attribute** | **Description**                                | **Possible Values**            |
+|---------------|------------------------------------------------|--------------------------------|
+| **Alt**       | Alternative Restaurant Availability            | Yes, No                         |
+| **Bar**       | Presence of a Bar                              | Yes, No                         |
+| **Fri**       | Is it Friday?                                  | Yes, No                         |
+| **Hun**       | Hunger Level                                   | Yes, No                         |
+| **Pat**       | Patronage Level                                | Some, Full, None                |
+| **Price**     | Price Range                                    | S, SS, $$$                      |
+| **Rain**      | Is it Raining?                                 | Yes, No                         |
+| **Res**       | Reservation Status                             | Yes, No                         |
+| **Type**      | Type of Cuisine                                | French, Thai, Burger, Italian   |
+| **Est**       | Estimated Wait Time                            | 0-10, 10-30, 30-60, >60          |
+| **WillWait**  | Decision to Wait at the Restaurant (Target)    | Yes, No                         |
 
-### **C. Cleaned Training Examples**
+### C. Cleaned Training Examples
 
 Here's a reorganized version of your training data for clarity:
 
@@ -50,7 +53,8 @@ Here's a reorganized version of your training data for clarity:
 **Note**: Some entries had inconsistencies (e.g., `Y = Yes`, `Ys = Yes`). These have been standardized to `Yes` or `No` under the `WillWait` column.
 
 ---
-## **2. Decision Tree Construction Steps**
+
+## 2. Decision Tree Construction Steps
 
 We'll follow the standard process for constructing a decision tree:
 
@@ -59,57 +63,58 @@ We'll follow the standard process for constructing a decision tree:
 3. **Recursively Repeat** the process for each child node, excluding attributes already used in the path.
 4. **Apply Termination Conditions**: Stop when all examples in a node belong to the same class or no attributes remain.
 
-### **A. Attribute Selection Criteria**
+### A. Attribute Selection Criteria
 
 To select the best attribute at each step, we'll use **Information Gain** based on **Entropy**.
 
-#### **1. Entropy**
+#### 1. Entropy
 
 Entropy measures the impurity or uncertainty in a dataset.
 
-\[
-\text{Entropy}(S) = -p_+ \log_2 p_+ - p_- \log_2 p_-
-\]
+```
+Entropy(S) = -p+ log2(p+) - p- log2(p-)
+```
 
 Where:
-- \( p_+ \) = proportion of positive examples (`Yes`)
-- \( p_- \) = proportion of negative examples (`No`)
+- `p+` = proportion of positive examples (`Yes`)
+- `p-` = proportion of negative examples (`No`)
 
-#### **2. Information Gain**
+#### 2. Information Gain
 
 Information Gain measures the reduction in entropy achieved by partitioning the dataset based on an attribute.
 
-\[
-\text{Information Gain} = \text{Entropy}(S) - \sum_{v \in \text{Values}(A)} \frac{|S_v|}{|S|} \text{Entropy}(S_v)
-\]
+```
+Information Gain = Entropy(S) - Σ (|Sv| / |S|) * Entropy(Sv)
+```
 
 Where:
-- \( A \) = Attribute
-- \( v \) = Value of attribute \( A \)
-- \( S_v \) = subset of \( S \) where \( A = v \)
-
+- `A` = Attribute
+- `v` = Value of attribute `A`
+- `Sv` = subset of `S` where `A = v`
+  
 ---
-### **B. Step-by-Step Construction**
+
+### B. Step-by-Step Construction
 
 Let's construct the decision tree using the provided data.
 
-#### **1. Calculate Entropy of the Entire Dataset**
+#### 1. Calculate Entropy of the Entire Dataset
 
-First, calculate the entropy of the entire dataset \( S \).
+First, calculate the entropy of the entire dataset `S`.
 
 - **Total Examples**: 12
 - **Positive (Yes)**: 7
 - **Negative (No)**: 5
 
-\[
-\text{Entropy}(S) = -\frac{7}{12} \log_2 \frac{7}{12} - \frac{5}{12} \log_2 \frac{5}{12} \approx 0.979
-\]
+```
+Entropy(S) = -(7/12) * log2(7/12) - (5/12) * log2(5/12) ≈ 0.979
+```
 
-#### **2. Calculate Information Gain for Each Attribute**
+#### 2. Calculate Information Gain for Each Attribute
 
-We'll calculate the Information Gain for each attribute to determine the best attribute to split on. For brevity, we'll demonstrate this process for a few key attributes.
+We'll calculate the Information Gain for each attribute to determine the best attribute to split on. **This time, we will include `Pat` in our calculations**.
 
-##### **A. Attribute: Alt**
+##### A. Attribute: Alt
 
 - **Values**: Yes, No
 
@@ -125,27 +130,24 @@ We'll calculate the Information Gain for each attribute to determine the best at
 
 **Calculate Entropy for each subset:**
 
-\[
-\text{Entropy}(\text{Alt=Yes}) = -\frac{4}{6} \log_2 \frac{4}{6} - \frac{2}{6} \log_2 \frac{2}{6} \approx 0.918
-\]
-
-\[
-\text{Entropy}(\text{Alt=No}) = -\frac{3}{6} \log_2 \frac{3}{6} - \frac{3}{6} \log_2 \frac{3}{6} = 1.0
-\]
+```
+Entropy(Alt=Yes) = -(4/6) * log2(4/6) - (2/6) * log2(2/6) ≈ 0.918
+Entropy(Alt=No) = -(3/6) * log2(3/6) - (3/6) * log2(3/6) = 1.0
+```
 
 **Weighted Entropy:**
 
-\[
-\text{Weighted Entropy} = \frac{6}{12} \times 0.918 + \frac{6}{12} \times 1.0 = 0.959
-\]
+```
+Weighted Entropy = (6/12) * 0.918 + (6/12) * 1.0 = 0.959
+```
 
 **Information Gain:**
 
-\[
-\text{Gain(Alt)} = 0.979 - 0.959 = 0.020
-\]
+```
+Gain(Alt) = 0.979 - 0.959 = 0.020
+```
 
-##### **B. Attribute: Bar**
+##### B. Attribute: Bar
 
 - **Values**: Yes, No
 
@@ -161,27 +163,24 @@ We'll calculate the Information Gain for each attribute to determine the best at
 
 **Calculate Entropy for each subset:**
 
-\[
-\text{Entropy}(\text{Bar=Yes}) = -\frac{4}{5} \log_2 \frac{4}{5} - \frac{1}{5} \log_2 \frac{1}{5} \approx 0.721
-\]
-
-\[
-\text{Entropy}(\text{Bar=No}) = -\frac{4}{7} \log_2 \frac{4}{7} - \frac{3}{7} \log_2 \frac{3}{7} \approx 0.985
-\]
+```
+Entropy(Bar=Yes) = -(4/5) * log2(4/5) - (1/5) * log2(1/5) ≈ 0.721
+Entropy(Bar=No) = -(4/7) * log2(4/7) - (3/7) * log2(3/7) ≈ 0.985
+```
 
 **Weighted Entropy:**
 
-\[
-\text{Weighted Entropy} = \frac{5}{12} \times 0.721 + \frac{7}{12} \times 0.985 \approx 0.900
-\]
+```
+Weighted Entropy = (5/12) * 0.721 + (7/12) * 0.985 ≈ 0.900
+```
 
 **Information Gain:**
 
-\[
-\text{Gain(Bar)} = 0.979 - 0.900 = 0.079
-\]
+```
+Gain(Bar) = 0.979 - 0.900 = 0.079
+```
 
-##### **C. Attribute: Fri**
+##### C. Attribute: Fri
 
 - **Values**: Yes, No
 
@@ -197,27 +196,62 @@ We'll calculate the Information Gain for each attribute to determine the best at
 
 **Calculate Entropy for each subset:**
 
-\[
-\text{Entropy}(\text{Fri=Yes}) = -\frac{4}{5} \log_2 \frac{4}{5} - \frac{1}{5} \log_2 \frac{1}{5} \approx 0.721
-\]
-
-\[
-\text{Entropy}(\text{Fri=No}) = -\frac{4}{7} \log_2 \frac{4}{7} - \frac{3}{7} \log_2 \frac{3}{7} \approx 0.985
-\]
+```
+Entropy(Fri=Yes) = -(4/5) * log2(4/5) - (1/5) * log2(1/5) ≈ 0.721
+Entropy(Fri=No) = -(4/7) * log2(4/7) - (3/7) * log2(3/7) ≈ 0.985
+```
 
 **Weighted Entropy:**
 
-\[
-\text{Weighted Entropy} = \frac{5}{12} \times 0.721 + \frac{7}{12} \times 0.985 \approx 0.900
-\]
+```
+Weighted Entropy = (5/12) * 0.721 + (7/12) * 0.985 ≈ 0.900
+```
 
 **Information Gain:**
 
-\[
-\text{Gain(Fri)} = 0.979 - 0.900 = 0.079
-\]
+```
+Gain(Fri) = 0.979 - 0.900 = 0.079
+```
 
-##### **D. Attribute: Type**
+##### D. Attribute: Pat
+
+- **Values**: Some, Full, None
+
+**Partition the data:**
+
+- **Pat = Some**: X1, X3, X6, X8 (4 examples)
+  - **Yes**: X1, X3, X6, X8 (4)
+  - **No**: 0
+  
+- **Pat = Full**: X2, X4, X5, X9, X10, X12 (6 examples)
+  - **Yes**: X4, X12 (2)
+  - **No**: X2, X5, X9, X10 (4)
+  
+- **Pat = None**: X7, X11 (2 examples)
+  - **Yes**: 0
+  - **No**: X7, X11 (2)
+
+**Calculate Entropy for each subset:**
+
+```
+Entropy(Pat=Some) = -(4/4) * log2(4/4) - (0/4) * log2(0/4) = 0  (All Yes)
+Entropy(Pat=Full) = -(2/6) * log2(2/6) - (4/6) * log2(4/6) ≈ 0.918
+Entropy(Pat=None) = -(0/2) * log2(0/2) - (2/2) * log2(2/2) = 0  (All No)
+```
+
+**Weighted Entropy:**
+
+```
+Weighted Entropy = (4/12) * 0 + (6/12) * 0.918 + (2/12) * 0 = 0 + 0.459 + 0 = 0.459
+```
+
+**Information Gain:**
+
+```
+Gain(Pat) = 0.979 - 0.459 = 0.520
+```
+
+##### E. Attribute: Type
 
 - **Values**: French, Thai, Burger, Italian
 
@@ -235,137 +269,87 @@ We'll calculate the Information Gain for each attribute to determine the best at
   - **Yes**: X3, X9 (2)
   - **No**: X7 (1)
   
-- **Type = Italian**: X6, X10 (Assuming X10 is Italian, although it appears twice)
+- **Type = Italian**: X6, X10 (Assuming X10 is Italian)
   - **Yes**: X6, X10 (2)
   - **No**: 0
 
 **Calculate Entropy for each subset:**
 
-\[
-\text{Entropy}(\text{French}) = -\frac{3}{4} \log_2 \frac{3}{4} - \frac{1}{4} \log_2 \frac{1}{4} \approx 0.811
-\]
-
-\[
-\text{Entropy}(\text{Thai}) = -\frac{2}{4} \log_2 \frac{2}{4} - \frac{2}{4} \log_2 \frac{2}{4} = 1.0
-\]
-
-\[
-\text{Entropy}(\text{Burger}) = -\frac{2}{3} \log_2 \frac{2}{3} - \frac{1}{3} \log_2 \frac{1}{3} \approx 0.918
-\]
-
-\[
-\text{Entropy}(\text{Italian}) = 0 \quad (\text{All Yes})
-\]
+```
+Entropy(French) = -(3/4) * log2(3/4) - (1/4) * log2(1/4) ≈ 0.811
+Entropy(Thai) = -(2/4) * log2(2/4) - (2/4) * log2(2/4) = 1.0
+Entropy(Burger) = -(2/3) * log2(2/3) - (1/3) * log2(1/3) ≈ 0.918
+Entropy(Italian) = 0  (All Yes)
+```
 
 **Weighted Entropy:**
 
-\[
-\text{Weighted Entropy} = \frac{4}{12} \times 0.811 + \frac{4}{12} \times 1.0 + \frac{3}{12} \times 0.918 + \frac{1}{12} \times 0 = 0.811 \times \frac{4}{12} + 1.0 \times \frac{4}{12} + 0.918 \times \frac{3}{12} + 0 \times \frac{1}{12} \approx 0.832
-\]
+```
+Weighted Entropy = (4/12) * 0.811 + (4/12) * 1.0 + (3/12) * 0.918 + (1/12) * 0 ≈ 0.832
+```
 
 **Information Gain:**
 
-\[
-\text{Gain(Type)} = 0.979 - 0.832 = 0.147
-\]
+```
+Gain(Type) = 0.979 - 0.832 = 0.147
+```
 
-**Analysis:**
+##### F. Summary of Information Gain
 
-- **Gain(Alt)**: 0.020
-- **Gain(Bar)**: 0.079
-- **Gain(Fri)**: 0.079
-- **Gain(Type)**: 0.147
+| **Attribute** | **Information Gain** |
+|---------------|----------------------|
+| Alt           | 0.020                |
+| Bar           | 0.079                |
+| Fri           | 0.079                |
+| Pat           | 0.520                |
+| Type          | 0.147                |
+| *Others*      | *To be calculated if necessary* |
 
-**Conclusion**: **Attribute 'Type'** has the highest Information Gain among the evaluated attributes. Therefore, it's the best attribute to split on at the root node.
+**Conclusion**: **Attribute `Pat`** has the highest Information Gain (0.520) among all attributes. Therefore, it should be selected as the **root attribute** for splitting the dataset.
 
-#### **3. Split on Attribute 'Type'**
+#### 3. Split on Attribute `Pat`
 
-Now, we partition the dataset based on the values of **Type**: French, Thai, Burger, Italian.
+Now, we partition the dataset based on the values of **Pat**: Some, Full, None.
 
-##### **A. Type = French**
+##### A. Pat = Some
 
-- **Examples**: X1, X4, X5, X12
-  - **Yes**: X1, X4, X12 (3)
-  - **No**: X5 (1)
+- **Examples**: X1, X3, X6, X8 (4 examples)
+  - **Yes**: X1, X3, X6, X8 (4)
+  - **No**: 0
 
 **Entropy:**
 
-\[
-\text{Entropy(French)} = -\frac{3}{4} \log_2 \frac{3}{4} - \frac{1}{4} \log_2 \frac{1}{4} \approx 0.811
-\]
+```
+Entropy(Pat=Some) = 0  (All Yes)
+```
 
 **Decision:**
 
-- Since not all examples have the same class, continue splitting.
+- **Create a Leaf Node** labeled **Yes**.
 
-**Remaining Attributes**: Alt, Bar, Fri, Hun, Pat, Price, Rain, Res, Est
+##### B. Pat = Full
 
-##### **B. Attribute Selection for Type = French**
+- **Examples**: X2, X4, X5, X9, X10, X12 (6 examples)
+  - **Yes**: X4, X12 (2)
+  - **No**: X2, X5, X9, X10 (4)
 
-Let's calculate Information Gain for a couple of attributes to select the next best attribute.
+**Entropy:**
 
-###### **1. Attribute: Pat**
+```
+Entropy(Pat=Full) = -(2/6) * log2(2/6) - (4/6) * log2(4/6) ≈ 0.918
+```
 
-- **Values**: Some, Full
+**Decision:**
 
-**Partition the data:**
+- Since the subset is not pure, select the next best attribute to split on within this subset.
 
-- **Pat = Some**: X1, X12 (2 examples)
-  - **Yes**: X1, X12 (2)
-  - **No**: 0
-  
-- **Pat = Full**: X4, X5 (2 examples)
-  - **Yes**: X4 (1)
-  - **No**: X5 (1)
+**Remaining Attributes**: Alt, Bar, Fri, Hun, Price, Rain, Res, Type, Est
 
-**Entropy for each subset:**
+##### C. Selecting Next Attribute for Pat = Full
 
-\[
-\text{Entropy}(\text{Pat=Some}) = 0 \quad (\text{All Yes})
-\]
+Let's calculate Information Gain for relevant attributes within this subset.
 
-\[
-\text{Entropy}(\text{Pat=Full}) = -\frac{1}{2} \log_2 \frac{1}{2} - \frac{1}{2} \log_2 \frac{1}{2} = 1.0
-\]
-
-**Weighted Entropy:**
-
-\[
-\text{Weighted Entropy} = \frac{2}{4} \times 0 + \frac{2}{4} \times 1.0 = 0.5
-\]
-
-**Information Gain:**
-
-\[
-\text{Gain(Pat)} = 0.811 - 0.5 = 0.311
-\]
-
-**Conclusion**: **Attribute 'Pat'** has a higher Information Gain (0.311) than other attributes like 'Alt' or 'Bar'. Therefore, split on **Pat**.
-
-###### **2. Splitting on 'Pat'**
-
-**Dataset**: X1, X4, X5, X12
-
-**Splits:**
-
-- **Pat = Some**: X1, X12
-  - **Yes**: X1, X12 (2)
-  - **Decision**: Create a **Leaf Node**: **Yes**
-  
-- **Pat = Full**: X4, X5
-  - **Yes**: X4 (1)
-  - **No**: X5 (1)
-  - **Decision**: Since there's one Yes and one No, select the majority class or choose another attribute for further splitting. For simplicity, we'll assign the majority class or select an attribute like **Price**.
-
-**Assigning Leaf Nodes:**
-
-- **Pat = Some**: **Yes**
-- **Pat = Full**:
-  - **Majority Class**: Tie between Yes and No. To resolve, we can select another attribute or use a rule (e.g., prefer 'No' if No is more critical).
-
-For this example, let's choose **Price** to split further.
-
-###### **3. Attribute: Price**
+###### 1. Attribute: Price
 
 - **Values**: S, SS, $$$
 
@@ -378,251 +362,184 @@ For this example, let's choose **Price** to split further.
 - **Price = S**: X12 (1 example)
   - **Yes**: X12 (1)
   
+- **Price = SS**: None
+
 **Entropy for each subset:**
 
-\[
-\text{Entropy}(\text{Price=\$\$\$}) = -\frac{1}{2} \log_2 \frac{1}{2} - \frac{1}{2} \log_2 \frac{1}{2} = 1.0
-\]
-
-\[
-\text{Entropy}(\text{Price=S}) = 0 \quad (\text{All Yes})
-\]
+```
+Entropy(Price=$$$) = -(1/2) * log2(1/2) - (1/2) * log2(1/2) = 1.0
+Entropy(Price=S) = 0  (All Yes)
+```
 
 **Weighted Entropy:**
 
-\[
-\text{Weighted Entropy} = \frac{2}{3} \times 1.0 + \frac{1}{3} \times 0 = 0.667
-\]
+```
+Weighted Entropy = (2/3) * 1.0 + (1/3) * 0 = 0.667
+```
 
 **Information Gain:**
 
-\[
-\text{Gain(Price)} = 0.811 - 0.667 = 0.144
-\]
+```
+Gain(Price) = 0.918 - 0.667 = 0.251
+```
 
-**Decision**: Split on **Price**.
+###### 2. Attribute: Type
+
+- **Values**: French, Italian
+
+**Partition the data:**
+
+- **Type = French**: X4, X5 (2 examples)
+  - **Yes**: X4 (1)
+  - **No**: X5 (1)
+  
+- **Type = Italian**: X12 (1 example)
+  - **Yes**: X12 (1)
+  
+**Entropy for each subset:**
+
+```
+Entropy(Type=French) = -(1/2) * log2(1/2) - (1/2) * log2(1/2) = 1.0
+Entropy(Type=Italian) = 0  (All Yes)
+```
+
+**Weighted Entropy:**
+
+```
+Weighted Entropy = (2/3) * 1.0 + (1/3) * 0 = 0.667
+```
+
+**Information Gain:**
+
+```
+Gain(Type) = 0.918 - 0.667 = 0.251
+```
+
+**Analysis:**
+
+- **Gain(Price)**: 0.251
+- **Gain(Type)**: 0.251
+
+**Conclusion**: Both `Price` and `Type` offer the same Information Gain. You can choose either. For consistency, let's choose **Price**.
+
+##### D. Splitting on Attribute `Price`
 
 **Splits:**
 
 - **Price = $$$**:
-  - **X4**: Yes
-  - **X5**: No
-  - **Decision**: Create two **Leaf Nodes**: **Yes** and **No** respectively.
+  - **Examples**: X4, X5
+    - **X4**: Yes
+    - **X5**: No
+  - **Decision**: Create two **Leaf Nodes**:
+    - **Price = $$$ & WillWait = Yes**
+    - **Price = $$$ & WillWait = No**
   
 - **Price = S**:
-  - **X12**: Yes
-  - **Decision**: Create a **Leaf Node**: **Yes**
+  - **Examples**: X12
+    - **X12**: Yes
+  - **Decision**: Create a **Leaf Node** labeled **Yes**
 
-##### **C. Attribute: Type = Thai**
+###### Visualization for Pat = Full
 
-- **Examples**: X2, X8, X10, X11
-  - **Yes**: X8, X10 (2)
-  - **No**: X2, X11 (2)
+```
+                   [Pat = Full]
+                   /          \
+           [Price = $$$]     [Price = S]
+               /   \             |
+             No     Yes          Yes
+```
+
+##### D. Pat = None
+
+- **Examples**: X7, X11 (2 examples)
+  - **Yes**: 0
+  - **No**: X7, X11 (2)
 
 **Entropy:**
 
-\[
-\text{Entropy(Thai)} = -\frac{2}{4} \log_2 \frac{2}{4} - \frac{2}{4} \log_2 \frac{2}{4} = 1.0
-\]
+```
+Entropy(Pat=None) = 0  (All No)
+```
 
 **Decision:**
 
-- Continue splitting.
+- **Create a Leaf Node** labeled **No**.
 
-**Remaining Attributes**: Alt, Bar, Fri, Hun, Pat, Price, Rain, Res, Est
+#### 3. Summary of Splits So Far
 
-##### **D. Attribute Selection for Type = Thai**
+```
+                       [Pat]
+                      /   |   \
+                Some   Full  None
+                 |      / \    |
+                Yes  Price   No
+                      /   \
+                   $$$     S
+                   / \     |
+                 No   Yes  Yes
+```
 
-Let's calculate Information Gain for a key attribute.
+#### 4. Handling Remaining Attributes
 
-###### **1. Attribute: Rain**
-
-- **Values**: Yes, No
-
-**Partition the data:**
-
-- **Rain = Yes**: X8, X10 (2 examples)
-  - **Yes**: X8, X10 (2)
-  
-- **Rain = No**: X2, X11 (2 examples)
-  - **Yes**: None
-  - **No**: X2, X11 (2)
-
-**Entropy for each subset:**
-
-\[
-\text{Entropy}(\text{Rain=Yes}) = 0 \quad (\text{All Yes})
-\]
-
-\[
-\text{Entropy}(\text{Rain=No}) = 0 \quad (\text{All No})
-\]
-
-**Weighted Entropy:**
-
-\[
-\text{Weighted Entropy} = \frac{2}{4} \times 0 + \frac{2}{4} \times 0 = 0
-\]
-
-**Information Gain:**
-
-\[
-\text{Gain(Rain)} = 1.0 - 0 = 1.0
-\]
-
-**Conclusion**: **Attribute 'Rain'** provides perfect Information Gain (1.0). Therefore, split on **Rain**.
-
-###### **2. Splitting on 'Rain'**
-
-**Dataset**: X2, X8, X10, X11
-
-**Splits:**
-
-- **Rain = Yes**: X8, X10
-  - **Yes**: X8, X10 (2)
-  - **Decision**: Create a **Leaf Node**: **Yes**
-  
-- **Rain = No**: X2, X11
-  - **Yes**: None
-  - **No**: X2, X11 (2)
-  - **Decision**: Create a **Leaf Node**: **No**
-
-##### **E. Attribute: Type = Burger**
-
-- **Examples**: X3, X7, X9
-  - **Yes**: X3, X9 (2)
-  - **No**: X7 (1)
-
-**Entropy:**
-
-\[
-\text{Entropy(Burger)} = -\frac{2}{3} \log_2 \frac{2}{3} - \frac{1}{3} \log_2 \frac{1}{3} \approx 0.918
-\]
-
-**Decision:**
-
-- Continue splitting.
-
-**Remaining Attributes**: Alt, Bar, Fri, Hun, Pat, Price, Rain, Res, Est
-
-###### **1. Attribute: Est**
-
-- **Values**: 0-10, >60
-
-**Partition the data:**
-
-- **Est = 0-10**: X3, X9 (2 examples)
-  - **Yes**: X3, X9 (2)
-  
-- **Est = >60**: X7 (1 example)
-  - **No**: X7 (1)
-
-**Entropy for each subset:**
-
-\[
-\text{Entropy}(\text{Est=0-10}) = 0 \quad (\text{All Yes})
-\]
-
-\[
-\text{Entropy}(\text{Est=>60}) = 0 \quad (\text{All No})
-\]
-
-**Weighted Entropy:**
-
-\[
-\text{Weighted Entropy} = \frac{2}{3} \times 0 + \frac{1}{3} \times 0 = 0
-\]
-
-**Information Gain:**
-
-\[
-\text{Gain(Est)} = 0.918 - 0 = 0.918
-\]
-
-**Conclusion**: **Attribute 'Est'** provides high Information Gain (0.918). Therefore, split on **Est**.
-
-###### **2. Splitting on 'Est'**
-
-**Dataset**: X3, X7, X9
-
-**Splits:**
-
-- **Est = 0-10**: X3, X9
-  - **Yes**: X3, X9 (2)
-  - **Decision**: Create a **Leaf Node**: **Yes**
-  
-- **Est = >60**: X7
-  - **No**: X7 (1)
-  - **Decision**: Create a **Leaf Node**: **No**
+All branches under `[Pat]` have either been classified or are pure. Thus, the tree is complete.
 
 ---
-## **3. Final Decision Tree**
 
-Based on the above splits, the final decision tree is structured as follows:
+## 3. Final Decision Tree
 
-```
-                       [Type]
-                      /   |    |    \
-                 French  Thai Burger Italian
-                  /      |      |        \
-              [Pat]    [Rain]  [Est]      Yes
-              /   \      |      /  \
-          Some   Full  Yes    0-10 >60
-           |      |      |      |    |
-          Yes    [Price] Yes    Yes  No
-                  /   \
-               $$$     S
-               /       \
-             No         Yes
-```
-
-**Detailed Structure:**
-
-1. **Root Node**: **Type**
-   - **French**
-     - **Attribute**: **Pat**
-       - **Pat = Some**: **Yes**
-       - **Pat = Full**:
-         - **Attribute**: **Price**
-           - **Price = $$$**: **No**
-           - **Price = S**: **Yes**
-   - **Thai**
-     - **Attribute**: **Rain**
-       - **Rain = Yes**: **Yes**
-       - **Rain = No**: **No**
-   - **Burger**
-     - **Attribute**: **Est**
-       - **Est = 0-10**: **Yes**
-       - **Est = >60**: **No**
-   - **Italian**: **Yes**
-   
-**Visualization:**
+Based on the corrected calculations, the final decision tree is structured as follows:
 
 ```
-                           Type
-                         /  |   |   \
-                   French Thai Burger Italian
-                   /      |      |        \
-                Pat     Rain    Est        Yes
-               /   \      |      / \
-          Some   Full   Yes   0-10 >60
-           |      |      |      |    |
-          Yes    [Price] Yes    Yes  No
-                  /   \
-               $$$     S
-               /       \
-             No         Yes
+                           [Pat]
+                          /   |   \
+                      Some  Full  None
+                       |     / \     |
+                     Yes  Price   No
+                           /   \
+                        $$$     S
+                        / \     |
+                      No   Yes  Yes
+```
+
+### Detailed Structure:
+
+1. **Root Node**: **Pat**
+   - **Pat = Some**:
+     - **Decision**: **Yes**
+   - **Pat = Full**:
+     - **Attribute**: **Price**
+       - **Price = $$$**:
+         - **Price = $$$ & WillWait = No**
+         - **Price = $$$ & WillWait = Yes**
+       - **Price = S**:
+         - **Price = S & WillWait = Yes**
+   - **Pat = None**:
+     - **Decision**: **No**
+
+### Visualization:
+
+```
+                           Pat
+                          / | \
+                       Some Full None
+                        |   / \    |
+                      Yes Price  No
+                           /  \
+                        $$$    S
+                        / \    |
+                      No  Yes  Yes
 ```
 
 ---
-## **4. Summary and Key Takeaways**
 
-- **Attribute Selection**: At each node, select the attribute with the highest Information Gain to maximize the reduction in entropy.
+## 4. Summary and Key Takeaways
+
+- **Attribute Selection**: At each node, select the attribute with the highest Information Gain to maximize the reduction in entropy. Initially, `Pat` had the highest Information Gain (0.520), making it the optimal choice for the root node.
   
 - **Splitting**: Partition the dataset based on the selected attribute's values, creating child nodes for each subset.
-
+  
 - **Recursive Splitting**: Continue the process recursively for each child node, excluding attributes already used in the path.
-
+  
 - **Termination Conditions**:
   - **Pure Nodes**: All examples belong to the same class (`Yes` or `No`).
   - **No Remaining Attributes**: Assign the majority class.
@@ -631,9 +548,10 @@ Based on the above splits, the final decision tree is structured as follows:
 - **Final Tree Structure**: Represents a series of decisions based on attribute values leading to the classification (`WillWait = Yes/No`).
 
 ---
-## **5. Additional Tips**
 
-### **A. Handling Continuous Attributes**
+## 5. Additional Tips
+
+### A. Handling Continuous Attributes
 
 Attributes like **Est** (Estimated Wait Time) have continuous values. To handle them effectively:
 
@@ -641,17 +559,17 @@ Attributes like **Est** (Estimated Wait Time) have continuous values. To handle 
   
 - **Threshold-Based Splits**: Use specific threshold values to split the data (e.g., Est ≤ 10).
 
-### **B. Dealing with Missing Values**
+### B. Dealing with Missing Values
 
 In real-world scenarios, some attribute values might be missing. Strategies include:
 
 - **Imputation**: Replace missing values with the mean, median, mode, or a predicted value.
   
 - **Ignoring Instances**: Remove examples with missing values (if they are few).
-
+  
 - **Use Surrogate Splits**: Find alternative attributes to split when the primary attribute is missing.
 
-### **C. Pruning to Prevent Overfitting**
+### C. Pruning to Prevent Overfitting
 
 - **Pre-Pruning**: Stop growing the tree when certain conditions are met (e.g., maximum depth, minimum samples per leaf).
   
@@ -660,7 +578,8 @@ In real-world scenarios, some attribute values might be missing. Strategies incl
 Pruning helps in creating a simpler and more generalizable model.
 
 ---
-## **6. Practical Implementation Tips**
+
+## 6. Practical Implementation Tips
 
 1. **Use Software Tools**:
    - **Python Libraries**: `scikit-learn` offers robust tools for decision tree construction (`DecisionTreeClassifier`).
@@ -678,8 +597,41 @@ Pruning helps in creating a simpler and more generalizable model.
    - **Class Imbalance**: If one class dominates, consider resampling techniques to balance the dataset.
 
 ---
-## **7. Final Thoughts**
+
+## 7. Final Thoughts
 
 Building a decision tree involves systematically selecting attributes that best split the data to reduce uncertainty and achieve accurate classifications. By following the steps of calculating entropy, determining information gain, and recursively partitioning the data, you can construct an effective decision tree tailored to your specific dataset.
 
+**Key Corrections:**
+
+- **Inclusion of `Pat` in Initial Calculations**: `Pat` was initially omitted, leading to an incomplete analysis. Including it revealed a higher Information Gain, making it the optimal root attribute.
+  
+- **Accurate Attribute Selection**: Always consider all relevant attributes when calculating Information Gain to ensure the most effective splits.
+
 If you have any further questions or need assistance with specific parts of the decision tree construction process, feel free to ask!
+
+---
+
+# References
+
+1. **Books**:
+   - *Artificial Intelligence: A Modern Approach* by Stuart Russell and Peter Norvig.
+   - *Machine Learning* by Tom M. Mitchell.
+   - *Data Mining: Concepts and Techniques* by Jiawei Han, Micheline Kamber, and Jian Pei.
+
+2. **Online Tutorials and Courses**:
+   - [Coursera: Machine Learning by Andrew Ng](https://www.coursera.org/learn/machine-learning)
+   - [Khan Academy: Decision Trees](https://www.khanacademy.org/math/statistics-probability)
+   - [GeeksforGeeks: Decision Tree](https://www.geeksforgeeks.org/decision-tree-set-1-introduction/)
+
+3. **Interactive Platforms**:
+   - [Scikit-learn Documentation on Decision Trees](https://scikit-learn.org/stable/modules/tree.html)
+   - [Weka: Data Mining Software](https://www.cs.waikato.ac.nz/ml/weka/)
+
+4. **Research Papers and Articles**:
+   - *A Survey of Decision Tree Classifier Methodology*.
+   - *Pruning Techniques for Decision Trees*.
+
+---
+
+Feel free to reach out if you need further assistance or have more questions!
